@@ -1,0 +1,5 @@
+mountpoints:
+  /:
+    url: "https://author-p225475-e2307814.adobeaemcloud.com/bin/franklin.delivery/Amy0127/mallesons-eds-demo/main"
+    type: "markup"
+    suffix: ".html"

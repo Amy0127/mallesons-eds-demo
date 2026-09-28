@@ -1,17 +1,23 @@
-# Your Project's Title...
-Your project's description...
+# Mallesons EDS Demo (XWalk)
+
+AEMaaCS sandbox PoC — Universal Editor + XWalk boilerplate.
 
 ## Environments
-- Preview: https://main--mallesons-eds-demo--Amy0127.aem.page/
-- Live: https://main--mallesons-eds-demo--Amy0127.aem.live/
+- Preview: https://main--mallesons-eds-demo--amy0127.aem.page/
+- Live: https://main--mallesons-eds-demo--amy0127.aem.live/
 
 ## Documentation
 
-Before using the aem-boilerplate, we recommand you to go through the documentation on https://www.aem.live/docs/ and more specifically:
-1. [Developer Tutorial](https://www.aem.live/developer/tutorial)
-2. [The Anatomy of a Project](https://www.aem.live/developer/anatomy-of-a-project)
-3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
-4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
+Before using the aem-boilerplate, we recommend you to go through the documentation on [www.aem.live](https://www.aem.live/docs/), more specifically:
+1. [AEM Authoring](https://www.aem.live/docs/aem-authoring)
+2. [Universal Editor Tutorial](https://www.aem.live/developer/ue-tutorial)
+3. [Component Model Definitions](https://www.aem.live/developer/component-model-definitions)
+4. [Authoring Path Mapping](https://www.aem.live/developer/authoring-path-mapping)
+
+## Prerequisites
+
+- nodejs 20 or newer
+- AEM Cloud Service release 2026.4 or newer
 
 ## Installation
 
@@ -24,11 +30,3 @@ npm i
 ```sh
 npm run lint
 ```
-
-## Local development
-
-1. Create a new repository based on the `aem-boilerplate` template
-1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
-1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
-1. Start AEM Proxy: `aem up` (opens your browser at `http://localhost:3000`)
-1. Open the `mallesons-eds-demo` directory in your favorite IDE and start coding :)

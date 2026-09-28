@@ -28,7 +28,6 @@ function sampleRUM(checkpoint, data) {
         on: 1,
         off: 0,
         high: 10,
-        medium: 100,
         low: 1000,
       }[rate];
       const weight = rateValue !== undefined ? rateValue : 100;
@@ -125,9 +124,7 @@ function sampleRUM(checkpoint, data) {
 
         sampleRUM.enhance = () => {
           // only enhance once
-          if (document.querySelector('script[src*="rum-enhancer"]')) {
-            return;
-          }
+          if (document.querySelector('script[src*="rum-enhancer"]')) return;
           const { enhancerVersion, enhancerHash } = sampleRUM.enhancerContext || {};
           const script = document.createElement('script');
           if (enhancerHash) {
@@ -157,21 +154,36 @@ function sampleRUM(checkpoint, data) {
 /**
  * Setup block utils.
  */
-function setup(importUrl = import.meta.url) {
+function setup() {
   window.hlx = window.hlx || {};
   window.hlx.RUM_MASK_URL = 'full';
   window.hlx.RUM_MANUAL_ENHANCE = true;
+  window.hlx.codeBasePath = '';
   window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
 
-  [window.hlx.codeBasePath] = new URL(importUrl).pathname.split('/scripts/');
+  const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
+  if (scriptEl) {
+    try {
+      const scriptURL = new URL(scriptEl.src, window.location);
+      if (scriptURL.host === window.location.host) {
+        [window.hlx.codeBasePath] = scriptURL.pathname.split('/scripts/scripts.js');
+      } else {
+        [window.hlx.codeBasePath] = scriptURL.href.split('/scripts/scripts.js');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }
 }
 
 /**
  * Auto initialization.
  */
+
 function init() {
   setup();
-  sampleRUM.collectBaseURL = new URL(`${window.hlx.codeBasePath}/`, window.origin);
+  sampleRUM.collectBaseURL = window.origin;
   sampleRUM();
 }
 
@@ -384,18 +396,28 @@ function wrapTextNodes(block) {
     'OL',
     'PICTURE',
     'TABLE',
-    'BLOCKQUOTE',
     'H1',
     'H2',
     'H3',
     'H4',
     'H5',
     'H6',
+    'HR',
   ];
 
   const wrap = (el) => {
     const wrapper = document.createElement('p');
     wrapper.append(...el.childNodes);
+    [...el.attributes]
+      // move the instrumentation from the cell to the new paragraph, also keep the class
+      // in case the content is a buttton and the cell the button-container
+      .filter(({ nodeName }) => nodeName === 'class'
+        || nodeName.startsWith('data-aue')
+        || nodeName.startsWith('data-richtext'))
+      .forEach(({ nodeName, nodeValue }) => {
+        wrapper.setAttribute(nodeName, nodeValue);
+        el.removeAttribute(nodeName);
+      });
     el.append(wrapper);
   };
 
@@ -453,14 +475,14 @@ function decorateIcons(element, prefix = '') {
  * @param {Element} main The container element
  */
 function decorateSections(main) {
-  main.querySelectorAll(':scope > div').forEach((section) => {
+  main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
-      if (e.tagName === 'DIV' || !defaultContent) {
+      if ((e.tagName === 'DIV' && e.className) || !defaultContent) {
         const wrapper = document.createElement('div');
         wrappers.push(wrapper);
-        defaultContent = e.tagName !== 'DIV';
+        defaultContent = e.tagName !== 'DIV' || !e.className;
         if (defaultContent) wrapper.classList.add('default-content-wrapper');
       }
       wrappers[wrappers.length - 1].append(e);
@@ -469,6 +491,24 @@ function decorateSections(main) {
     section.classList.add('section');
     section.dataset.sectionStatus = 'initialized';
     section.style.display = 'none';
+
+    // Process section metadata
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      Object.keys(meta).forEach((key) => {
+        if (key === 'style') {
+          const styles = meta.style
+            .split(',')
+            .filter((style) => style)
+            .map((style) => toClassName(style.trim()));
+          styles.forEach((style) => section.classList.add(style));
+        } else {
+          section.dataset[toCamelCase(key)] = meta[key];
+        }
+      });
+      sectionMeta.parentNode.remove();
+    }
   });
 }
 
@@ -546,7 +586,7 @@ async function loadBlock(block) {
  */
 function decorateBlock(block) {
   const shortBlockName = block.classList[0];
-  if (shortBlockName) {
+  if (shortBlockName && !block.dataset.blockStatus) {
     block.classList.add('block');
     block.dataset.blockName = shortBlockName;
     block.dataset.blockStatus = 'initialized';
@@ -573,12 +613,7 @@ function decorateBlocks(main) {
  */
 async function loadHeader(header) {
   const headerBlock = buildBlock('header', '');
-  const existingHeaderBlock = header.querySelector(':scope > .header');
-  if (existingHeaderBlock) {
-    existingHeaderBlock.replaceWith(headerBlock);
-  } else {
-    header.append(headerBlock);
-  }
+  header.append(headerBlock);
   decorateBlock(headerBlock);
   return loadBlock(headerBlock);
 }
@@ -590,12 +625,7 @@ async function loadHeader(header) {
  */
 async function loadFooter(footer) {
   const footerBlock = buildBlock('footer', '');
-  const existingFooterBlock = footer.querySelector(':scope > .footer');
-  if (existingFooterBlock) {
-    existingFooterBlock.replaceWith(footerBlock);
-  } else {
-    footer.append(footerBlock);
-  }
+  footer.append(footerBlock);
   decorateBlock(footerBlock);
   return loadBlock(footerBlock);
 }
