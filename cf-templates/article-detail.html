@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{data.articleByPath.item.singleLineText}}</title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <div class="article-detail">
+          <div class="article-banner">
+            <h1>{{data.articleByPath.item.singleLineText}}</h1>
+          </div>
+
+          <div class="article-body">
+            {{#data.articleByPath.item.sections}}
+              {{#isText}}
+              <div class="section section-text">
+                <div class="cmp-text">{{{text}}}</div>
+              </div>
+              {{/isText}}
+              {{#isImage}}
+              <div class="section section-image">
+                <picture>
+                  <img src="{{assetRef}}" alt="{{caption}}">
+                </picture>
+                {{#caption}}<p class="image-caption">{{caption}}</p>{{/caption}}
+              </div>
+              {{/isImage}}
+              {{#isAccordion}}
+              <div class="section section-accordion">
+                <div class="accordion">
+                  {{#accordionItems}}
+                  <details>
+                    <summary>{{title}}</summary>
+                    <div class="cmp-text">{{{content}}}</div>
+                  </details>
+                  {{/accordionItems}}
+                </div>
+              </div>
+              {{/isAccordion}}
+            {{/data.articleByPath.item.sections}}
+          </div>
+
+          <div class="article-reference">
+            <p class="article-reference-title">References</p>
+            <ol class="reference-list">
+              {{#data.articleByPath.item.references}}
+              <li class="reference-item">
+                <span class="reference-number">[{{number}}]</span>
+                <span class="reference-text">{{{text}}}</span>
+              </li>
+              {{/data.articleByPath.item.references}}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
