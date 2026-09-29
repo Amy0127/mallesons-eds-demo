@@ -27,6 +27,11 @@
                 {{#caption}}<p class="image-caption">{{caption}}</p>{{/caption}}
               </div>
               {{/isImage}}
+              {{#isEmbed}}
+              <div class="section section-embed">
+                {{{html}}}
+              </div>
+              {{/isEmbed}}
               {{#isAccordion}}
               <div class="section section-accordion">
                 <div class="accordion">
