@@ -214,5 +214,83 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "article-header",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Standfirst",
+        "value": ""
+      },
+      {
+        "component": "aem-content-fragment",
+        "valueType": "string",
+        "name": "author",
+        "label": "Author (Person)"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "publishDate",
+        "label": "Publish Date"
+      }
+    ]
+  },
+  {
+    "id": "accordion-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "itemLabel",
+        "label": "Item Label"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "itemBody",
+        "label": "Item Body",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "embed",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "url",
+        "label": "Embed URL",
+        "description": "YouTube, Vimeo or other embeddable URL"
+      }
+    ]
+  },
+  {
+    "id": "quote",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "quoteText",
+        "label": "Quote",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "attribution",
+        "label": "Attribution"
+      }
+    ]
   }
 ]

@@ -1,0 +1,28 @@
+.article-header {
+  margin: 32px auto 24px;
+}
+
+.article-header .article-header-title {
+  margin: 0 0 16px;
+}
+
+.article-header .article-header-standfirst {
+  font-size: var(--body-font-size-m);
+  color: var(--dark-color);
+  margin-bottom: 16px;
+}
+
+.article-header .article-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: var(--body-font-size-s);
+  color: var(--dark-color);
+  border-top: 1px solid #dadada;
+  padding-top: 12px;
+}
+
+.article-header .article-header-date::before {
+  content: "·";
+  padding-right: 16px;
+}

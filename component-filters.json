@@ -15,7 +15,18 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "article-header",
+      "accordion",
+      "embed",
+      "quote",
+      "table"
+    ]
+  },
+  {
+    "id": "accordion",
+    "components": [
+      "accordion-item"
     ]
   },
   {
