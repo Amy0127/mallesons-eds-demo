@@ -36,8 +36,14 @@ export default function decorate(block) {
   meta.className = 'article-header-meta';
 
   if (authorCell) {
-    const author = authorCell.querySelector('a') || authorCell;
-    const value = author.textContent.trim();
+    const anchor = authorCell.querySelector('a');
+    const raw = (anchor ? anchor.getAttribute('href') : authorCell.textContent).trim();
+    let value = anchor ? anchor.textContent.trim() : raw;
+    // CF/path references render as their JCR path; show a readable slug instead.
+    if (/^\/content\//.test(value)) {
+      const slug = value.split('/').filter(Boolean).pop() || '';
+      value = slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    }
     if (value) {
       const byline = document.createElement('span');
       byline.className = 'article-header-author';
