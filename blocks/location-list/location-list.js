@@ -2,16 +2,52 @@
  * Location list block — the "Office Locations" index (mirrors the AEM
  * `location` component on /locations): a cream full-bleed band with a centered
  * eyebrow and one collapsible row per country. Expanding a country reveals its
- * offices as a 3-column grid of links.
+ * offices as a grid of links.
  *
- * Authored as a DA table:
+ * DATA MODE — fully automatic (default):
+ *   The block is authored empty (or with an eyebrow/override row only). It reads
+ *   the EDS query index (/query-index.json) and builds the country -> city list
+ *   from every published office page that carries `country` / `city` metadata
+ *   (see helix-query.yaml). Publishing a new office page makes it appear here
+ *   with no authoring step.
+ *
+ * AUTHOR OVERRIDE (optional, takes precedence when present):
  *   row 1 (single cell)              -> eyebrow label ("Office Locations")
  *   row N: [country][city][city]...  -> one country + its city cells
  *   last single-cell row (optional)  -> footnote text
- *
- * A city cell renders as a compact link when it contains a direct <a>;
- * otherwise it falls back to a full office entry (title + contact details).
+ *   A city cell renders as a link when it contains a direct <a>.
  */
+const QUERY_INDEX = '/query-index.json';
+const LOCATION_PREFIX = '/locations/';
+let indexPromise;
+
+async function loadLocations() {
+  if (!indexPromise) {
+    indexPromise = fetch(QUERY_INDEX)
+      .then((r) => (r.ok ? r.json() : { data: [] }))
+      .then((j) => (j.data || [])
+        .filter((row) => row.country && row.path?.startsWith(LOCATION_PREFIX))
+        .sort((a, b) => (a.country === b.country
+          ? (a.city || '').localeCompare(b.city || '')
+          : a.country.localeCompare(b.country))))
+      .catch(() => []);
+  }
+  return indexPromise;
+}
+
+function groupByCountry(rows) {
+  const groups = [];
+  rows.forEach((row) => {
+    let group = groups.find((g) => g.name === row.country);
+    if (!group) {
+      group = { name: row.country, cities: [] };
+      groups.push(group);
+    }
+    group.cities.push({ name: row.city || row.path.split('/').pop(), link: row.path });
+  });
+  return groups;
+}
+
 function span(cls) {
   const s = document.createElement('span');
   s.className = cls;
@@ -19,50 +55,40 @@ function span(cls) {
   return s;
 }
 
-function buildCity(cell) {
+function buildCity({ name, link }) {
   const city = document.createElement('div');
   city.className = 'con-tab-city';
 
-  const direct = cell.querySelector(':scope > a');
-  if (direct) {
-    const title = document.createElement('div');
-    title.className = 'exp-title exp-cloudOffice';
-    direct.append(span('kwm-icon--next'));
-    title.append(direct);
-    city.append(title);
-    return city;
-  }
-
-  // full office entry (non AU/SG): title line + contact details
-  const heading = cell.querySelector('h2, h3, h4, strong');
   const title = document.createElement('div');
   title.className = 'exp-title';
-  title.textContent = heading ? heading.textContent.trim() : '';
-  if (title.textContent) city.append(title);
-
-  const cont = document.createElement('div');
-  cont.className = 'exp-cont';
-  while (cell.firstChild) cont.append(cell.firstChild);
-  if (cont.textContent.trim()) city.append(cont);
+  if (link) {
+    title.classList.add('exp-cloudOffice');
+    const a = document.createElement('a');
+    a.href = link;
+    a.textContent = name;
+    a.append(span('kwm-icon--next'));
+    title.append(a);
+  } else {
+    title.textContent = name;
+  }
+  city.append(title);
   return city;
 }
 
-function buildTab(row) {
-  const cells = [...row.children];
-
+function buildTab(group) {
   const tab = document.createElement('div');
   tab.className = 'con-tab';
 
   const title = document.createElement('h2');
   title.className = 'con-tab-title';
-  title.textContent = cells[0].textContent.trim();
+  title.textContent = group.name;
 
   const content = document.createElement('div');
   content.className = 'con-tab-content';
 
   const exp = document.createElement('div');
   exp.className = 'con-tab-exp';
-  cells.slice(1).forEach((cell) => exp.append(buildCity(cell)));
+  group.cities.forEach((city) => exp.append(buildCity(city)));
   content.append(exp);
 
   const check = document.createElement('div');
@@ -74,40 +100,52 @@ function buildTab(row) {
   return tab;
 }
 
-export default function decorate(block) {
+/* ---- author override (optional authored rows) ---- */
+function cell(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  return d;
+}
+
+function authoredGroups(block) {
+  const groups = [];
+  [...block.children].forEach((row) => {
+    const cells = [...row.children];
+    if (cells.length < 2) return;
+    groups.push({
+      name: cells[0].textContent.trim(),
+      cities: cells.slice(1).map((c) => {
+        const a = c.querySelector('a');
+        return a
+          ? { name: a.textContent.trim(), link: a.getAttribute('href') }
+          : { name: c.textContent.trim(), link: '' };
+      }),
+    });
+  });
+  return groups;
+}
+
+function buildStructure(block, groups, eyebrow, note) {
   const con = document.createElement('div');
   con.className = 'con';
 
-  const office = document.createElement('div');
-  office.className = 'little-office';
-
-  const textRows = [];
-
-  [...block.children].forEach((row) => {
-    if (row.children.length < 2) {
-      textRows.push(row.textContent.trim());
-      return;
-    }
-    office.append(buildTab(row));
-  });
-
-  // first single-cell row = eyebrow, last = footnote
-  if (textRows.length) {
-    const eyebrow = document.createElement('div');
-    eyebrow.className = 'little-title';
-    eyebrow.innerHTML = '<p></p>';
-    eyebrow.firstChild.textContent = textRows[0];
-    con.append(eyebrow);
+  if (eyebrow) {
+    const el = document.createElement('div');
+    el.className = 'little-title';
+    el.append(cell(eyebrow).firstChild);
+    con.append(el);
   }
 
+  const office = document.createElement('div');
+  office.className = 'little-office';
+  groups.forEach((group) => office.append(buildTab(group)));
   con.append(office);
 
-  if (textRows.length > 1) {
-    const note = document.createElement('div');
-    note.className = 'little-text';
-    note.innerHTML = '<p></p>';
-    note.firstChild.textContent = textRows[textRows.length - 1];
-    con.append(note);
+  if (note) {
+    const el = document.createElement('div');
+    el.className = 'little-text';
+    el.append(cell(note).firstChild);
+    con.append(el);
   }
 
   const container = document.createElement('div');
@@ -131,4 +169,18 @@ export default function decorate(block) {
       if (content) content.classList.remove('is-open');
     });
   });
+}
+
+export default async function decorate(block) {
+  const textRows = [...block.children]
+    .filter((row) => row.children.length < 2)
+    .map((row) => row.textContent.trim());
+
+  let groups = authoredGroups(block);
+  if (!groups.length) groups = groupByCountry(await loadLocations());
+
+  const eyebrow = textRows[0] || 'Office Locations';
+  const note = textRows.length > 1 ? textRows[textRows.length - 1] : '';
+
+  buildStructure(block, groups, eyebrow, note);
 }

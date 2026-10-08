@@ -14,3 +14,9 @@ indices:
       robots:
         select: head > meta[name="robots"]
         value: attribute(el, "content")
+      country:
+        select: head > meta[name="country"]
+        value: attribute(el, "content")
+      city:
+        select: head > meta[name="city"]
+        value: attribute(el, "content")
