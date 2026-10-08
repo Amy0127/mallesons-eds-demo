@@ -1,0 +1,27 @@
+.location-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.location-col p {
+  margin: 0 0 8px;
+}
+
+.location-col h2,
+.location-col h3 {
+  margin-top: 0;
+}
+
+.location-tel,
+.location-email,
+.location-map {
+  font-weight: 600;
+}
+
+@media (width >= 900px) {
+  .location-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+}

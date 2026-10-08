@@ -20,7 +20,10 @@
       "accordion",
       "embed",
       "quote",
-      "table"
+      "table",
+      "location",
+      "location-list",
+      "people"
     ]
   },
   {
@@ -33,6 +36,12 @@
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "people",
+    "components": [
+      "person"
     ]
   },
   {

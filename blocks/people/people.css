@@ -1,0 +1,52 @@
+.people-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.people-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.people-card-image img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+}
+
+.people-card-body {
+  margin-top: 12px;
+}
+
+.people-card-body p {
+  margin: 0 0 4px;
+}
+
+.people-card-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.people-card-role {
+  color: var(--dark-color, #333);
+}
+
+.people-card-location {
+  color: var(--secondary-color, #666);
+  font-size: 0.9rem;
+}
+
+.people-card-link {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* variants */
+.people.key-contacts .people-list {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}

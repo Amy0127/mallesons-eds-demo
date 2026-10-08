@@ -1,0 +1,22 @@
+.location-list-group {
+  margin-bottom: 24px;
+}
+
+.location-list-country {
+  margin: 0 0 8px;
+}
+
+.location-list-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.location-list-city {
+  font-weight: 500;
+}
+
+.location-list-city a::after {
+  content: '›';
+  margin-left: 4px;
+}
