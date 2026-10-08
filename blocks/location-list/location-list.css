@@ -1,22 +1,237 @@
-.location-list-group {
-  margin-bottom: 24px;
+/*
+ * Location list — pixel reproduction of the AEM `location` component
+ * (officialsite: components/content/location). Source values were taken from
+ * location.scss / fontDesign.scss where 1rem = 10px (the origin sets
+ * html{font-size:10px}).
+ *
+ * Cream full-bleed band, centered eyebrow, one collapsible row per country,
+ * city links in a 3-column grid with an arrow that slides on hover.
+ */
+.location-list {
+  --ll-ink: #1b1028;
+  --ll-bg: #f6f4ee;
+  --ll-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'/%3E%3C/svg%3E");
+  --ll-chevron-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z'/%3E%3C/svg%3E");
+
+  background-color: var(--ll-bg);
+  color: var(--ll-ink);
 }
 
-.location-list-country {
-  margin: 0 0 8px;
+/* full-bleed: cancel the default EDS section column */
+main > .section > div.location-list {
+  max-width: none;
+  padding: 0;
 }
 
-.location-list-items {
+main > .section:has(> div.location-list) {
+  margin: 0;
+}
+
+.location-list .location-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.location-list .con {
+  padding: 80px 8.3% 120px;
+}
+
+/* eyebrow */
+.location-list .little-title {
+  margin: 0 25% 80px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  line-height: 24px;
+  color: var(--ll-ink);
+}
+
+.location-list .little-title p {
+  margin: 0;
+}
+
+/* country accordion rows */
+.location-list .little-office .con-tab {
+  border-bottom: 1px solid var(--ll-ink);
+}
+
+.location-list .little-office .con-tab:first-child {
+  border-top: 1px solid var(--ll-ink);
+}
+
+.location-list .con-tab-title {
+  margin: 39px 0 40px;
+  text-align: center;
+  cursor: pointer;
+  font-family: 'Denton', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: 9px;
+  line-height: 50px;
+  color: var(--ll-ink);
+}
+
+.location-list .con-tab-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+
+.location-list .con-tab-content.is-open {
+  max-height: 3000px;
+}
+
+.location-list .con-tab-exp {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 24px;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.location-list-city {
-  font-weight: 500;
+.location-list .con-tab-city {
+  box-sizing: border-box;
+  width: 25%;
+  margin-right: 10%;
+  margin-top: 60px;
 }
 
-.location-list-city a::after {
-  content: '›';
-  margin-left: 4px;
+.location-list .con-tab-city:nth-child(3n) {
+  margin-right: 5%;
+}
+
+.location-list .exp-title {
+  margin-bottom: 20px;
+  font-family: 'Denton', Georgia, 'Times New Roman', serif;
+  font-size: 36px;
+  letter-spacing: 1px;
+  line-height: 50px;
+  color: var(--ll-ink);
+}
+
+.location-list .exp-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* arrow that slides on hover */
+.location-list .exp-cloudOffice .kwm-icon--next {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: var(--ll-arrow) center / contain no-repeat;
+  mask: var(--ll-arrow) center / contain no-repeat;
+  transition: margin-left 0.4s ease;
+}
+
+.location-list .exp-cloudOffice:hover .kwm-icon--next {
+  margin-left: 20px;
+}
+
+/* full office entry (non AU/SG countries) */
+.location-list .exp-cont {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 30px;
+  color: var(--ll-ink);
+}
+
+.location-list .exp-cont p {
+  margin: 0;
+}
+
+.location-list .exp-cont a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+
+.location-list .exp-cont a:hover {
+  opacity: 0.6;
+}
+
+/* show less */
+.location-list .check-in {
+  margin: 60px 0 80px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  letter-spacing: 1px;
+  line-height: 21px;
+  color: var(--ll-ink);
+}
+
+.location-list .check-in .kwm-icon--fold {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: var(--ll-chevron-up) center / contain no-repeat;
+  mask: var(--ll-chevron-up) center / contain no-repeat;
+}
+
+/* footnote */
+.location-list .little-text {
+  margin-top: 40px;
+  font-size: 18px;
+  line-height: 30px;
+  color: var(--ll-ink);
+  opacity: 0.6;
+}
+
+.location-list .little-text p {
+  margin: 0;
+}
+
+@media screen and (max-width: 750px) {
+  .location-list .con {
+    padding-top: 40px;
+  }
+
+  .location-list .little-title {
+    margin-bottom: 40px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .location-list .con-tab-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    line-height: 36px;
+  }
+
+  .location-list .con-tab-exp {
+    margin-top: 35px;
+  }
+
+  .location-list .con-tab-city {
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    padding: 0;
+  }
+
+  .location-list .con-tab-city:not(:first-child) {
+    margin-top: 50px;
+  }
+
+  .location-list .exp-title {
+    margin-bottom: 10px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    line-height: 36px;
+  }
+
+  .location-list .check-in {
+    margin-top: 30px;
+    margin-bottom: 40px;
+    font-size: 12px;
+  }
 }
