@@ -1,35 +1,80 @@
 /**
  * People block — a grid of people (used for office lawyers, key contacts,
- * authors, media contacts). Each row is one person.
+ * authors, media contacts).
  *
- * Two data modes:
- *  1. Inline (snapshot): the row cells carry image + name/title/location/link.
- *     Self-contained — renders with no external dependency. This is what the
- *     migration bridge writes today.
- *  2. Reference (stage 1+): a cell carries only a person link with a
- *     `data-id` attribute; the block hydrates from /people-index.json.
- *     Enabled automatically when that index exists (see PEOPLE_INDEX).
+ * Mode is chosen automatically:
+ *  1. AUTO FILTER (default, when the block is authored empty): reads the
+ *     current page's `office-id` metadata, fetches /people-index.json and
+ *     renders every person whose `office` list contains it. Publishing a new
+ *     person page makes them appear with no authoring step.
+ *  2. INLINE SNAPSHOT: authored rows carry image + name/role/location/link.
+ *  3. REFERENCE: a row/cell with [data-id] is hydrated from /people-index.json.
  *
- * Row shapes accepted:
- *   [image][body]                       -> image + text body
- *   [body]                              -> text-only card
- *   [image][name][role][location][link] -> each field its own cell
+ * Row shapes accepted (inline): [image][body] / [body] / [image][name][role][location][link]
  */
 const PEOPLE_INDEX = '/people-index.json';
 let peopleIndexPromise;
+
+function getMeta(name) {
+  const el = document.head.querySelector(`meta[name="${name}"]`);
+  return el ? el.content.trim() : '';
+}
 
 async function loadPeopleIndex() {
   if (!peopleIndexPromise) {
     peopleIndexPromise = fetch(PEOPLE_INDEX)
       .then((r) => (r.ok ? r.json() : { data: [] }))
-      .then((j) => {
-        const map = new Map();
-        (j.data || []).forEach((p) => { if (p.path) map.set(p.path, p); });
-        return map;
-      })
-      .catch(() => new Map());
+      .then((j) => j.data || [])
+      .catch(() => []);
   }
   return peopleIndexPromise;
+}
+
+function cardFromPerson(person) {
+  const li = document.createElement('li');
+  li.className = 'people-card';
+
+  const imageCell = document.createElement('div');
+  imageCell.className = 'people-card-image';
+  if (person.image) {
+    const pic = document.createElement('picture');
+    const img = document.createElement('img');
+    img.src = person.image;
+    img.alt = person.name || '';
+    img.loading = 'lazy';
+    pic.append(img);
+    imageCell.append(pic);
+  }
+  li.append(imageCell);
+
+  const body = document.createElement('div');
+  body.className = 'people-card-body';
+  const name = document.createElement('p');
+  name.className = 'people-card-name';
+  name.textContent = person.name || '';
+  const role = document.createElement('p');
+  role.className = 'people-card-role';
+  role.textContent = person.jobTitle || '';
+  const office = document.createElement('p');
+  office.className = 'people-card-location';
+  office.textContent = person.officeName || '';
+  body.append(name, role, office);
+  li.append(body);
+
+  if (person.path) {
+    const a = document.createElement('a');
+    a.className = 'people-card-link';
+    a.href = person.path;
+    a.textContent = person.name || 'Profile';
+    li.append(a);
+  }
+  return li;
+}
+
+function matchesOffice(person, officeId) {
+  if (!officeId) return false;
+  const offices = Array.isArray(person.office) ? person.office : [person.office];
+  return offices.includes(officeId);
 }
 
 function buildCard(row) {
@@ -66,15 +111,15 @@ function buildCard(row) {
 }
 
 async function hydrate(cardEl, path) {
-  const index = await loadPeopleIndex();
-  const person = index.get(path);
+  const people = await loadPeopleIndex();
+  const person = people.find((p) => p.path === path);
   if (!person) return;
   const name = cardEl.querySelector('.people-card-name');
   const role = cardEl.querySelector('.people-card-role');
   const loc = cardEl.querySelector('.people-card-location');
   if (name && person.name) name.textContent = person.name;
   if (role && person.jobTitle) role.textContent = person.jobTitle;
-  if (loc && person.office) loc.textContent = person.office;
+  if (loc && person.officeName) loc.textContent = person.officeName;
   const img = cardEl.querySelector('img');
   if (!img && person.image) {
     const pic = document.createElement('picture');
@@ -87,15 +132,28 @@ async function hydrate(cardEl, path) {
   }
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const ul = document.createElement('ul');
   ul.className = 'people-list';
-  [...block.children].forEach((row) => {
-    const card = buildCard(row);
-    ul.append(card);
-    // stage-1 reference mode
-    const ref = row.querySelector('[data-id]');
-    if (ref) hydrate(card, ref.getAttribute('data-id'));
-  });
+
+  const rows = [...block.children];
+  const hasContent = rows.some((row) => row.children.length > 0 && row.textContent.trim());
+
+  if (hasContent) {
+    rows.forEach((row) => {
+      if (!row.children.length) return;
+      const card = buildCard(row);
+      ul.append(card);
+      const ref = row.querySelector('[data-id]');
+      if (ref) hydrate(card, ref.getAttribute('data-id'));
+    });
+  } else {
+    const officeId = getMeta('office-id');
+    const people = (await loadPeopleIndex())
+      .filter((p) => matchesOffice(p, officeId))
+      .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    people.forEach((p) => ul.append(cardFromPerson(p)));
+  }
+
   block.replaceChildren(ul);
 }

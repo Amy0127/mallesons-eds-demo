@@ -20,3 +20,28 @@ indices:
       city:
         select: head > meta[name="city"]
         value: attribute(el, "content")
+
+  # People index — one row per person page, carrying the office relation so
+  # office pages can list their people by filtering on `office` (an office id).
+  people:
+    include:
+      - '/people/**'
+    exclude:
+      - '/people'
+    target: /people-index.json
+    properties:
+      name:
+        select: head > meta[name="person-name"]
+        value: attribute(el, "content")
+      jobTitle:
+        select: head > meta[name="job-title"]
+        value: attribute(el, "content")
+      office:
+        select: head > meta[name="office-id"]
+        values: attribute(el, "content")
+      officeName:
+        select: head > meta[name="office-name"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[name="person-image"]
+        value: attribute(el, "content")
