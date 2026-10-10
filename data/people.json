@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-10T08:48:54.875Z",
+  "source": "https://publish-p225475-e2307814.adobeaemcloud.com/graphql/execute.json/global/person-list-with-refs",
+  "count": 2,
+  "people": [
+    {
+      "path": "/content/dam/mallesons/cf/en/persons/jane-doe",
+      "slug": "jane-doe",
+      "url": "/people/jane-doe",
+      "name": "Jane Doe",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "jobTitle": {
+        "title": "Partner",
+        "path": "/content/dam/mallesons/cf/en/job-titles/partner"
+      },
+      "offices": [
+        {
+          "title": "Sydney",
+          "path": "/content/dam/mallesons/cf/en/offices/sydney"
+        }
+      ]
+    },
+    {
+      "path": "/content/dam/mallesons/cf/en/persons/peter-pan",
+      "slug": "peter-pan",
+      "url": "/people/peter-pan",
+      "name": "Peter Pan",
+      "firstName": "Peter",
+      "lastName": "Pan",
+      "jobTitle": {
+        "title": "Partner",
+        "path": "/content/dam/mallesons/cf/en/job-titles/partner"
+      },
+      "offices": [
+        {
+          "title": "Sydney",
+          "path": "/content/dam/mallesons/cf/en/offices/sydney"
+        },
+        {
+          "title": "Beijing",
+          "path": "/content/dam/mallesons/cf/en/offices/beijing"
+        }
+      ]
+    }
+  ]
+}

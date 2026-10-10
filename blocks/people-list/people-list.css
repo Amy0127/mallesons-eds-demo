@@ -1,0 +1,47 @@
+.people-list .people-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.people-list .people-list-card {
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  padding: 16px 18px;
+  background: #fff;
+}
+
+.people-list .people-list-name {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.people-list .people-list-name a {
+  color: #1b1028;
+  text-decoration: none;
+}
+
+.people-list .people-list-name a:hover {
+  text-decoration: underline;
+}
+
+.people-list .people-list-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #6b6b6b;
+}
+
+.people-list .people-list-note {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+.people-list .people-list-error {
+  margin: 0;
+  color: #b00020;
+}
