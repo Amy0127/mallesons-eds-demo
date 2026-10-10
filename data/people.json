@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T09:02:34.128Z",
+  "generatedAt": "2026-10-10T09:17:07.930Z",
   "source": "https://author-p225475-e2307814.adobeaemcloud.com/content/cq:graphql/global/endpoint.json?query=%7B%20personList(sort%3A%20%22title%22)%20%7B%20items%20%7B%20_path%20title%20firstName%20lastName%20jobTitle%20%7B%20_path%20title%20%7D%20offices%20%7B%20_path%20title%20%7D%20%7D%20%7D%20%7D",
   "count": 2,
   "people": [
@@ -38,7 +38,7 @@
           "path": "/content/dam/mallesons/cf/en/offices/sydney"
         },
         {
-          "title": "Beijing (China)",
+          "title": "Beijing (China-test)",
           "path": "/content/dam/mallesons/cf/en/offices/beijing"
         }
       ]
