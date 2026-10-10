@@ -10,6 +10,17 @@
         <div class="article-detail">
           <div class="article-banner">
             <h1>{{data.articleByPath.item.singleLineText}}</h1>
+            <p class="article-type">{{#articleType}}{{title}}{{/articleType}}</p>
+          </div>
+
+          <div class="article-authors">
+            {{#data.articleByPath.item.authors}}
+            <div class="article-author">
+              <span class="author-name">{{title}}</span>
+              {{#jobTitle}}<span class="author-jobtitle">{{title}}</span>{{/jobTitle}}
+              {{#offices}}<span class="author-office">{{title}}</span>{{/offices}}
+            </div>
+            {{/data.articleByPath.item.authors}}
           </div>
 
           <div class="article-body">
