@@ -1,26 +1,43 @@
 /**
- * People List block — renders the people listing from a static JSON shard
- * produced by the bridge (CF -> data/people.json). The shard is committed to
- * this repo and served by the code bus from the site's own origin, so the
- * block needs no AEM access (and no CORS) at runtime.
+ * People List block — renders the people listing from the DA-hosted shard
+ * produced by the bridge (CF -> DA document, JSON in a <pre> block).
  *
- * Authoring: empty block, or first cell = shard path (default /data/people.json).
+ * Reads the shard through the content bus plain-html variant:
+ *   /data/people -> fetch /data/people.plain.html -> parse <pre> -> JSON
+ * (A path ending in .json is fetched directly, kept for flexibility.)
+ *
+ * Authoring: empty block, or first cell = shard doc path (default /data/people).
  */
+const DEFAULT_SHARD = '/data/people';
+
+async function fetchShard(shardPath) {
+  if (shardPath.endsWith('.json')) {
+    const resp = await fetch(shardPath);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return resp.json();
+  }
+  const resp = await fetch(`${shardPath}.plain.html`);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const html = await resp.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const payload = doc.querySelector('pre');
+  if (!payload) throw new Error('shard document has no <pre> payload');
+  return JSON.parse(payload.textContent);
+}
+
 export default async function decorate(block) {
   const config = [...block.querySelectorAll(':scope > div > div')]
     .map((cell) => cell.textContent.trim())
     .filter(Boolean);
-  const shardUrl = config[0] || '/data/people.json';
+  const shardPath = config[0] || DEFAULT_SHARD;
 
   block.textContent = '';
 
   let shard;
   try {
-    const resp = await fetch(shardUrl);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    shard = await resp.json();
+    shard = await fetchShard(shardPath);
   } catch (err) {
-    console.error('people-list: could not load shard', shardUrl, err);
+    console.error('people-list: could not load shard', shardPath, err);
     const msg = document.createElement('p');
     msg.className = 'people-list-error';
     msg.textContent = 'People list is temporarily unavailable.';
