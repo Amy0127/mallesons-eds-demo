@@ -50,7 +50,20 @@
         "hero",
         "cards",
         "columns",
-        "fragment"
+        "fragment",
+        "article-header",
+        "article-meta",
+        "author-card",
+        "related-articles",
+        "accordion",
+        "embed",
+        "quote",
+        "table",
+        "location",
+        "location-list",
+        "people",
+        "people-list",
+        "people-list-runtime"
       ]
     }
   ]

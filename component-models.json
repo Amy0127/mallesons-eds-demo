@@ -142,6 +142,54 @@
     ]
   },
   {
+    "id": "accordion-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "itemLabel",
+        "label": "Item Label"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "itemBody",
+        "label": "Item Body",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "article-header",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Standfirst",
+        "value": ""
+      },
+      {
+        "component": "aem-content-fragment",
+        "valueType": "string",
+        "name": "author",
+        "label": "Author (Person)"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "publishDate",
+        "label": "Publish Date"
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -176,6 +224,18 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "embed",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "url",
+        "label": "Embed URL",
+        "description": "YouTube, Vimeo or other embeddable URL"
       }
     ]
   },
@@ -216,84 +276,6 @@
     ]
   },
   {
-    "id": "article-header",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "description",
-        "label": "Standfirst",
-        "value": ""
-      },
-      {
-        "component": "aem-content-fragment",
-        "valueType": "string",
-        "name": "author",
-        "label": "Author (Person)"
-      },
-      {
-        "component": "date-time",
-        "valueType": "date",
-        "name": "publishDate",
-        "label": "Publish Date"
-      }
-    ]
-  },
-  {
-    "id": "accordion-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "itemLabel",
-        "label": "Item Label"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "itemBody",
-        "label": "Item Body",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "embed",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "url",
-        "label": "Embed URL",
-        "description": "YouTube, Vimeo or other embeddable URL"
-      }
-    ]
-  },
-  {
-    "id": "quote",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "quoteText",
-        "label": "Quote",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "attribution",
-        "label": "Attribution"
-      }
-    ]
-  },
-  {
     "id": "location",
     "fields": [
       {
@@ -320,6 +302,30 @@
         "valueType": "string",
         "name": "mapUrl",
         "label": "Map URL"
+      }
+    ]
+  },
+  {
+    "id": "people-list-runtime",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "executeUrl",
+        "label": "GraphQL Execute URL",
+        "description": "Optional. Persisted query execute URL (default /graphql/execute.json/global/person-list-with-refs)."
+      }
+    ]
+  },
+  {
+    "id": "people-list",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "shardPath",
+        "label": "Shard Path",
+        "description": "Optional. Path to the people shard document (default /data/people)."
       }
     ]
   },
@@ -376,6 +382,24 @@
         "valueType": "string",
         "name": "link",
         "label": "Profile Link"
+      }
+    ]
+  },
+  {
+    "id": "quote",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "quote",
+        "label": "Quote",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "attribution",
+        "label": "Attribution"
       }
     ]
   }
