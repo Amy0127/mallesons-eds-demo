@@ -182,4 +182,10 @@ async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+// Guard against the page bootstrap running twice in the same document, which
+// would append a second header/footer block (loadHeader/loadFooter are not
+// idempotent) and render duplicate header/footer content.
+if (!window.__edsBootstrapped) {
+  window.__edsBootstrapped = true;
+  loadPage();
+}
