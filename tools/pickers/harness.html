@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Person Picker — Host Harness</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./harness.css">
+  </head>
+  <body>
+    <header>
+      <h1>Person Picker <span>宿主模拟器（Host Harness）</span></h1>
+      <p>
+        模拟 DA library 宿主：与 <code>person.html</code> 完成 MessageChannel 握手，
+        接收 <code>sendText / sendHTML / getSelection / closeLibrary</code> 并作用到左侧模拟文档。
+      </p>
+    </header>
+
+    <main>
+      <section class="doc-pane">
+        <h2>1. 模拟文档（先把光标放进单元格，再点右侧人员）</h2>
+        <div id="doc" contenteditable="true" spellcheck="false">
+          <div class="doc-row"><div class="k">author</div><div class="v">（光标放这里）</div></div>
+          <div class="doc-row"><div class="k">office</div><div class="v"></div></div>
+          <div class="doc-row"><div class="k">jobTitle</div><div class="v"></div></div>
+        </div>
+        <div class="doc-actions">
+          <button id="clear" type="button">清空值列</button>
+          <button id="reset-panel" type="button" hidden>重新打开面板</button>
+        </div>
+      </section>
+
+      <section class="panel-pane">
+        <h2>2. DA 侧面板（真实插件页 iframe）</h2>
+        <div class="panel" id="panel">
+          <iframe id="picker" src="./person.html" title="Person Picker"></iframe>
+        </div>
+      </section>
+
+      <section class="log-pane">
+        <h2>3. 协议日志（宿主 ↔ 插件页）</h2>
+        <pre id="log"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="./harness.js"></script>
+  </body>
+</html>

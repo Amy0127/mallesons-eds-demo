@@ -1,5 +1,14 @@
 {
   "project": "AEM XWalk Boilerplate",
   "editUrlLabel": "AEM Editor",
-  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open"
+  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open",
+  "plugins": [
+    {
+      "id": "person-picker",
+      "title": "Person Picker",
+      "environments": ["da-edit"],
+      "daLibrary": true,
+      "url": "https://main--mallesons-eds-demo--amy0127.aem.page/tools/pickers/person.html"
+    }
+  ]
 }

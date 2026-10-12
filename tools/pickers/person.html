@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Person Picker</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./person.css">
+    <!-- DA App SDK: same official pattern as the bacom-sandbox Tag Browser -->
+    <script src="https://da.live/nx/utils/sdk.js" type="module"></script>
+    <script src="./person.js" type="module"></script>
+  </head>
+  <body>
+    <main>
+      <header class="picker-header">
+        <h1>Person Picker</h1>
+        <span id="conn-badge" class="badge off">未连接</span>
+      </header>
+
+      <div class="controls">
+        <input id="search" type="search" placeholder="搜索姓名 / 职位 / 办公室" autocomplete="off">
+        <div class="modes" role="radiogroup" aria-label="插入内容">
+          <label><input type="radio" name="mode" value="path" checked> 路径</label>
+          <label><input type="radio" name="mode" value="name"> 姓名</label>
+        </div>
+      </div>
+
+      <ul id="list" class="people"></ul>
+      <p id="empty" class="empty" hidden>没有匹配的人员</p>
+
+      <footer class="picker-footer">
+        <div class="footer-row">
+          <button id="get-selection" type="button" class="ghost">读取选区（getSelection）</button>
+          <label class="close-after">
+            <input type="checkbox" id="close"> 插入后关闭
+          </label>
+        </div>
+        <p id="status" class="status" role="status">等待 DA 宿主握手…</p>
+      </footer>
+    </main>
+  </body>
+</html>
