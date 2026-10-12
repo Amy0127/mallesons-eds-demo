@@ -1,0 +1,30 @@
+.related-articles .related-articles-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.related-articles .related-articles-item {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+.related-articles .related-articles-item a {
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.related-articles .related-articles-date {
+  color: #888;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.related-articles .related-articles-empty {
+  color: #888;
+}

@@ -45,3 +45,30 @@ indices:
       image:
         select: head > meta[name="person-image"]
         value: attribute(el, "content")
+      address:
+        select: head > meta[name="person-address"]
+        value: attribute(el, "content")
+
+  # Articles index — one row per article page. `author` is the reference the
+  # article authors into its metadata (a person page path); the author page
+  # lists its articles by filtering this index, so the reverse relation is
+  # never stored twice.
+  articles:
+    include:
+      - '/articles/**'
+    exclude:
+      - '/articles'
+    target: /articles-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      author:
+        select: head > meta[name="author"]
+        values: attribute(el, "content")
+      publishDate:
+        select: head > meta[name="publish-date"]
+        value: attribute(el, "content")
